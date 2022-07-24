@@ -1,25 +1,21 @@
-# in-memory vector similarity search
-# objects and/or metadata attached to vectors
-
-# row 1: "text info here", <<vector here>>, <<timestamp>>
-
-# row 2: "AGI memory 1", <<vector 1 - 512d similarity>>, <<vector 2 - 2048 similarity vector>>, <<timestamps>>, <<filename>>
-
-
 import pickle
 import numpy as np
 from time import time
 from uuid import uuid4
 import sys
 from pprint import pprint as pp
+from multiprocessing import Pool
 
 
 class Vdb():
     def __init__(self):
         self.data = list()
     
-    def add(self, payload):  # payload is a DICT
-        self.data.append(payload)  # uuid could be in payload :) 
+    def add(self, payload):  # payload is a DICT or LIST
+        if isinstance(payload, dict):   # payload is a dict, so append
+            self.data.append(payload)  # uuid could be in payload :) 
+        elif isinstance(payload, list):     # payload is a list, so concatenate lists
+            self.data = self.data + payload
     
     def delete(self, field, value, firstonly=False):
         for i in self.data:
@@ -49,7 +45,19 @@ class Vdb():
         except:
             return ordered
     
+    def bound(self, field, lower_bound, upper_bound):
+        # return all results that have a field with a value between two bounds, i.e. all items between two timestamps
+        results = list()
+        for i in self.data:
+            try:
+                if i[field] >= lower_bound and i[field] <= upper_bound:
+                    results.append(i)
+            except:
+                continue
+        return results
+    
     def purge(self):
+        del self.data
         self.data = list()
     
     def save(self, filepath):
@@ -67,15 +75,28 @@ class Vdb():
 
 
 if __name__ == '__main__':
+    print('instantiating arrays')
     vdb = Vdb()
-    dimension = 12    # dimensions of each vector                         
-    n = 200    # number of vectors                   
+    dimension = 128    # dimensions of each vector                         
+    count = 10000000          # number of vectors                   
     np.random.seed(1)             
-    db_vectors = np.random.random((n, dimension)).astype('float32')
-    print(db_vectors[0])
-    for vector in db_vectors:
+    #db_vectors = np.random.random((n, dimension)).astype('float32')
+    print('loading up the database')
+    for n in range(0, count):
+        vector = np.random.random(dimension).astype('float16')
         info = {'vector': vector, 'time': time(), 'uuid': str(uuid4())}
         vdb.add(info)
+        if n % 50000 == 0:
+            print(n)
     vdb.details()
-    results = vdb.search(db_vectors[10])
-    pp(results)
+    print('starting search')
+    start = time()
+    results = vdb.search(np.random.random(dimension).astype('float16'))
+    end = time()
+    print('regular search time (s):', end-start)
+    #pp(results)
+    exit(0)
+    #start = time()
+    #results = vdb.new_search(db_vectors[10])
+    #end = time()
+    #print('new search time (s):', end-start)

@@ -33,3 +33,13 @@ if __name__ == '__main__':
     results = vdb.search(db_vectors[10])
     pp(results)
 ```
+
+## Usage Documentation
+
+Coming soon!
+
+## Discussion
+
+To discuss VDBLITE and ask general questions, use https://github.com/daveshap/VDBLITE/discussions 
+
+Do not open issues with basic questions, they will be closed and ignored. Only legitimate issues will be acknowledged. 

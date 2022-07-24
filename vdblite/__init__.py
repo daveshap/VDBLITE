@@ -1,17 +1,18 @@
+import faiss
 import pickle
 import numpy as np
-from time import time
-#from uuid import uuid4
 import sys
-#from pprint import pprint as pp
 
 
 class Vdb():
     def __init__(self):
         self.data = list()
     
-    def add(self, payload):  # payload is a DICT
-        self.data.append(payload)  # uuid could be in payload :) 
+    def add(self, payload):  # payload is a DICT or LIST
+        if isinstance(payload, dict):   # payload is a dict, so append
+            self.data.append(payload)  # uuid could be in payload :) 
+        elif isinstance(payload, list):     # payload is a list, so concatenate lists
+            self.data = self.data + payload
     
     def delete(self, field, value, firstonly=False):
         for i in self.data:
@@ -22,6 +23,21 @@ class Vdb():
                         return
             except:
                 continue
+    
+    def initialize(self, field='vector'):
+        dimension = len(self.data[0][field])
+        nlist = 5  # number of clusters TODO this should be dynamic
+        quantiser = faiss.IndexFlatL2(dimension)
+        self.index = faiss.IndexIVFFlat(quantiser, dimension, nlist, faiss.METRIC_L2)
+        vectors = [i[field] for i in self.data]
+        self.index.train(vectors)
+        index.add(vectors)
+
+    def index_search(self, vector, field='vector', count=5):
+        # TODO 
+        k = 3  # num of nearest neighbors
+        distances, indices = self.index.search(vector, k)
+        # TODO
     
     def search(self, vector, field='vector', count=5):
         results = list()
@@ -41,14 +57,28 @@ class Vdb():
         except:
             return ordered
     
+    def bound(self, field, lower_bound, upper_bound):
+        # return all results that have a field with a value between two bounds, i.e. all items between two timestamps
+        results = list()
+        for i in self.data:
+            try:
+                if i[field] >= lower_bound and i[field] <= upper_bound:
+                    results.append(i)
+            except:
+                continue
+        return results
+    
     def purge(self):
+        del self.data
         self.data = list()
     
     def save(self, filepath):
+        # TODO save index
         with open(filepath, 'wb') as outfile:
             pickle.dump(self.data, outfile)
 
     def load(self, filepath):
+        # TODO save index
         with open(filepath, 'wb') as infile:
             self.data = pickle.load(infile)
 
