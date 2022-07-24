@@ -12,14 +12,19 @@ python -m twine upload dist/*
 """
 
 
-setup(name='vdblite',
-      version='0.1.1',
-      description='Vector Database Lite',
-      url='https://github.com/daveshap/VDBLITE',
-      long_description=long_description,
-      long_description_content_type="text/markdown",
-      author='David Shapiro',
-      author_email='noone@gmail.com',
-      license='MIT',
-      packages=['vdblite'],
-      zip_safe=False)
+setup(
+    name='vdblite',
+    version='0.1.1',
+    install_requires=[
+        'faiss'
+    ],
+    description='Vector Database Lite',
+    url='https://github.com/daveshap/VDBLITE',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    author='David Shapiro',
+    author_email='noone@gmail.com',
+    license='MIT',
+    packages=['vdblite'],
+    zip_safe=False
+)

@@ -1,10 +1,11 @@
+import faiss
 import pickle
 import numpy as np
 from time import time
 from uuid import uuid4
 import sys
 from pprint import pprint as pp
-from multiprocessing import Pool
+
 
 
 class Vdb():
@@ -26,6 +27,23 @@ class Vdb():
                         return
             except:
                 continue
+    
+    def initialize(self, field='vector', clusters=5):
+        dimension = len(self.data[0][field])
+        nlist = clusters  # number of clusters TODO this should be dynamic
+        quantiser = faiss.IndexFlatL2(dimension)
+        self.index = faiss.IndexIVFFlat(quantiser, dimension, nlist, faiss.METRIC_L2)
+        vectors = [i[field] for i in self.data]
+        self.index.train(vectors)
+        self.index.add(vectors)
+        print('Index is trained:', self.index.is_trained)
+
+    def index_search(self, vector, count=5):
+        distances, indices = self.index.search(list(vector), count)
+        result = list()
+        for idx in indices[0]:
+            result.append self.data[idx]
+        return result        
     
     def search(self, vector, field='vector', count=5):
         results = list()
@@ -64,9 +82,15 @@ class Vdb():
         with open(filepath, 'wb') as outfile:
             pickle.dump(self.data, outfile)
 
+    def save_index(self, filepath):
+        faiss.write_index(self.index, filepath)
+
     def load(self, filepath):
         with open(filepath, 'wb') as infile:
             self.data = pickle.load(infile)
+
+    def load_index(self, filepath):
+        self.index = faiss.read_index(filepath)  # load the index
 
     def details(self):
         print('DB elements #:', len(self.data))
