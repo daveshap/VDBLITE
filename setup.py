@@ -14,7 +14,7 @@ python -m twine upload dist/*
 
 setup(
     name='vdblite',
-    version='0.1.1',
+    version='0.1.2',
     install_requires=[
         'faiss'
     ],

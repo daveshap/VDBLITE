@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
 ## Class Vdb Methods
 
-### add(payload)
+## Vdb.add(payload)
 
 ```python
 # add a dictionary
@@ -49,7 +49,7 @@ vdb.add(info)
 
 Add a an arbitrary number of records to `self.data` (master list of data) of your Vdb object. No checks are performed beyond data type. 
 
-#### payload
+### payload
 
 Payload must be either a `list` or `dict` variable type. For instance:
 
@@ -72,7 +72,7 @@ info = [
 ]
 ```	
 
-### delete(field, value, firstonly=False)
+## Vdb.delete(field, value, firstonly=False)
 
 ```python
 # delete all records with timestamp at UNIX time of 123.456789
@@ -81,19 +81,19 @@ vdb.delete('timestamp', 123.456789, False)
 
 Delete record(s) with fields that match a given value
 
-#### field
+### field
 
 Specify which element within each record to match for deletion
 
-#### value
+### value
 
 Specify value to be matched for deletion
 
-#### firstonly
+### firstonly
 
 *Optional.* `False` by default. Will delete all records with `fields` that match `value`. Set to `True` if you only want to delete a single record
 
-### search(vector, field='vector', count=5)
+## Vdb.search(vector, field='vector', count=5)
 
 ```python
 results = vdb.search([1.0, 0.0], 'vector', 5)
@@ -101,19 +101,19 @@ results = vdb.search([1.0, 0.0], 'vector', 5)
 
 Search for *n* number of records that are most similar to `vector` (cosine similarity). Specify `field` if searching any other field than *vector*.
 
-#### vector
+### vector
 
 1-dimensional numpy array to match your query. Performs cosine similarity against all vectors in `self.data`
 
-#### field='vector'
+### field='vector'
 
 *Optional.* Specify which field contains the *vector* for comparison. Records can contain more than one vector. For instance you may have vectors of different dimensionality, or from different models for different purposes.
 
-#### count=5
+### count=5
 
 *Optional.* Specify number of matches to return.
 
-### bound(field, lower_bound, upper_bound)
+## Vdb.bound(field, lower_bound, upper_bound)
 
 ```python
 results = vdb.bound('time', 123.456789, 987.654321)
@@ -121,23 +121,23 @@ results = vdb.bound('time', 123.456789, 987.654321)
 
 Return all records with `field` value between `lower_bound` and `upper_bound` e.g. all records with a timestamp between two specific values.
 
-#### field 
+### field 
 
 Specify which field to compare in all records.
 
-#### lower_bound
+### lower_bound
 
 Minimum threshold to return.
 
-#### upper_bound
+### upper_bound
 
 Maximum threshold to return.
 
-### purge()
+## Vdb.purge()
 
 Delete `self.data` from memory and reinstantiate.
 
-### save(filepath)
+## Vdb.save(filepath)
 
 ```python
 vdb.save('my_data.vdb')
@@ -145,11 +145,11 @@ vdb.save('my_data.vdb')
 
 Save VDB data to file
 
-#### filepath
+### filepath
 
 Relative or absolute filepath of save file
 
-### load(filepath)
+## Vdb.load(filepath)
 
 ```python
 vdb = Vdb()
@@ -158,6 +158,6 @@ vdb.load('my_data.vdb')
 
 Load saved VDB data into memory
 
-#### filepath
+### filepath
 
 Relative or absolute filepath of save file
