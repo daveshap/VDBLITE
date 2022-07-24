@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
 ## Class Vdb Methods
 
-## Vdb.add(payload)
+## Vdb.**add(payload)**
 
 ```python
 # add a dictionary
@@ -72,7 +72,7 @@ info = [
 ]
 ```	
 
-## Vdb.delete(field, value, firstonly=False)
+## Vdb.**delete(field, value, firstonly=False)**
 
 ```python
 # delete all records with timestamp at UNIX time of 123.456789
@@ -93,7 +93,7 @@ Specify value to be matched for deletion
 
 *Optional.* `False` by default. Will delete all records with `fields` that match `value`. Set to `True` if you only want to delete a single record
 
-## Vdb.search(vector, field='vector', count=5)
+## Vdb.**search(vector, field='vector', count=5)**
 
 ```python
 results = vdb.search([1.0, 0.0], 'vector', 5)
@@ -113,7 +113,7 @@ Search for *n* number of records that are most similar to `vector` (cosine simil
 
 *Optional.* Specify number of matches to return.
 
-## Vdb.bound(field, lower_bound, upper_bound)
+## Vdb.**bound(field, lower_bound, upper_bound)**
 
 ```python
 results = vdb.bound('time', 123.456789, 987.654321)
@@ -133,11 +133,11 @@ Minimum threshold to return.
 
 Maximum threshold to return.
 
-## Vdb.purge()
+## Vdb.**purge()**
 
 Delete `self.data` from memory and reinstantiate.
 
-## Vdb.save(filepath)
+## Vdb.**save(filepath)**
 
 ```python
 vdb.save('my_data.vdb')
@@ -149,7 +149,7 @@ Save VDB data to file
 
 Relative or absolute filepath of save file
 
-## Vdb.load(filepath)
+## Vdb.**load(filepath)**
 
 ```python
 vdb = Vdb()
